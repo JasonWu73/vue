@@ -1,26 +1,70 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <the-header></the-header>
+  <router-view v-slot="slotProps">
+    <transition name="route" mode="out-in">
+      <component :is="slotProps.Component"></component>
+    </transition>
+  </router-view>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+  import TheHeader from './components/layout/TheHeader';
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  export default {
+    components: { TheHeader }
+  };
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="scss">
+  @import url("./vendors/css/font-roboto.css");
+
+  *,
+  *::after,
+  *::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+  }
+
+  html {
+    font-size: 10px / 16px * 100%;
+  }
+
+  body {
+    font-family: "Roboto", sans-serif;
+    font-size: 1.6rem;
+    box-sizing: border-box;
+  }
+
+  h2, h3, h4 {
+    margin-bottom: 3rem;
+  }
+
+  p {
+    margin-top: 3rem;
+  }
+
+  .route-enter-from {
+    opacity: 0;
+    transform: translateY(-3rem);
+  }
+
+  .route-leave-to {
+    opacity: 0;
+    transform: translateY(3rem);
+  }
+
+  .route-enter-active {
+    transition: all .3s ease-out;
+  }
+
+  .route-leave-active {
+    transition: all .3s ease-in;
+  }
+
+  .route-enter-to,
+  .route-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+  }
 </style>
