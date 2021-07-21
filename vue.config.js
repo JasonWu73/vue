@@ -3,8 +3,9 @@ module.exports = {
     loaderOptions: {
       scss: {
         additionalData: `
-          @import "~@/sass/_variables.scss";
-          @import "~@/sass/_mixins.scss";
+          @use "~@/sass/abstracts/_variables.scss" as *;
+          @use "~@/sass/abstracts/_mixins.scss" as *;
+          @use "~@/sass/components/_form.scss" as *;
         `
       }
     }

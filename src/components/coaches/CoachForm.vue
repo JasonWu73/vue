@@ -1,38 +1,38 @@
 <template>
   <form @submit.prevent="submitForm">
-    <div class="form-control" :class="{ invalid: firstName.isInvalid }">
+    <div class="form-control" :class="{ invalid: firstName.invalid }">
       <label for="firstname">Firstname</label>
       <input type="text" id="firstname"
         v-model.trim="firstName.val"
         @blur="clearValidity('firstName')"
       >
-      <span class="message" v-if="firstName.isInvalid">First Name must not empty.</span>
+      <span class="message" v-if="firstName.invalid">First Name must not empty.</span>
     </div>
-    <div class="form-control" :class="{ invalid: lastName.isInvalid }">
+    <div class="form-control" :class="{ invalid: lastName.invalid }">
       <label for="lastname">Lastname</label>
       <input type="text" id="lastname"
         v-model.trim="lastName.val"
         @blur="clearValidity('lastName')"
       >
-      <p class="message" v-if="lastName.isInvalid">Last Name must not empty.</p>
+      <span class="message" v-if="lastName.invalid">Last Name must not empty.</span>
     </div>
-    <div class="form-control" :class="{ invalid: description.isInvalid }">
+    <div class="form-control" :class="{ invalid: description.invalid }">
       <label for="description">Description</label>
       <textarea id="description"
         v-model.trim="description.val"
         @blur="clearValidity('description')"
       ></textarea>
-      <p class="message" v-if="description.isInvalid">Description must not empty.</p>
+      <span class="message" v-if="description.invalid">Description must not empty.</span>
     </div>
-    <div class="form-control" :class="{ invalid: rate.isInvalid }">
+    <div class="form-control" :class="{ invalid: rate.invalid }">
       <label for="rate">Hourly Rate</label>
       <input type="number" id="rate"
         v-model.number="rate.val"
         @blur="clearValidity('rate')"
       >
-      <p class="message" v-if="rate.isInvalid">Hourly Rate must greater than 0.</p>
+      <span class="message" v-if="rate.invalid">Hourly Rate must greater than 0.</span>
     </div>
-    <div class="form-control" :class="{ invalid: areas.isInvalid }">
+    <div class="form-control" :class="{ invalid: areas.invalid }">
       <h3>Areas of Expertise</h3>
       <div>
         <input type="checkbox" id="frontend" value="frontend"
@@ -55,10 +55,8 @@
         >
         <label for="career">Career Advisory</label>
       </div>
-      <p class="message" v-if="areas.isInvalid">At least select one expertise.</p>
+      <span class="message" v-if="areas.invalid">At least select one expertise.</span>
     </div>
-    <p class="message" v-if="isFormInvalid"
-    >Please fixed above errors, then click register again.</p>
     <base-button>Register</base-button>
   </form>
 </template>
@@ -70,48 +68,47 @@
       return {
         firstName: {
           val: '',
-          isInvalid: false
+          invalid: false
         },
         lastName: {
           val: '',
-          isInvalid: false
+          invalid: false
         },
         description: {
           val: '',
-          isInvalid: false
+          invalid: false
         },
         rate: {
           val: null,
-          isInvalid: false
+          invalid: false
         },
         areas: {
           val: [],
-          isInvalid: false
+          invalid: false
         },
-        isFormInvalid: false
+        formInvalid: false
       };
     },
     methods: {
-      clearValidity(filed) {
-       this[filed].isInvalid = false;
-       this.isFormInvalid = false;
+      clearValidity(key) {
+       this[key].invalid = false;
+       this.formInvalid = false;
+      },
+      setInvalid(key) {
+        this[key].invalid = true;
+        this.formInvalid = true;
       },
       validateForm() {
-        const setInvalid = field => {
-          field.isInvalid = true;
-          this.isFormInvalid = true;
-        };
-
-        if (this.firstName.val === '') setInvalid(this.firstName);
-        if (this.lastName.val === '') setInvalid(this.lastName);
-        if (this.description.val === '') setInvalid(this.description);
-        if (!this.rate.val || this.rate.val < 0) setInvalid(this.rate);
-        if (this.areas.val.length === 0) setInvalid(this.areas);
+        if (this.firstName.val === '') this.setInvalid('firstName');
+        if (this.lastName.val === '') this.setInvalid('lastName');
+        if (this.description.val === '') this.setInvalid('description');
+        if (!this.rate.val || this.rate.val < 0) this.setInvalid('rate');
+        if (this.areas.val.length === 0) this.setInvalid('areas');
       },
       submitForm() {
         this.validateForm();
 
-        if (this.isFormInvalid) return;
+        if (this.formInvalid) return;
 
         const formData = {
           first: this.firstName.val,
@@ -128,76 +125,8 @@
 </script>
 
 <style lang="scss" scoped>
-  @mixin input {
-    display: block;
-    width: 100%;
-    border: 1px solid $color-grey;
-    font: inherit;
-
-    &:focus {
-      background-color: $color-purple-pale;
-      outline: none;
-      border-color: $color-primary-purple;
-    }
-  }
-
-  .form-control {
-    margin: 0.5rem 0;
-  }
-
-  label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-
-  input {
-    @include input;
-
-    &[type='checkbox'] {
-      display: inline;
-      width: auto;
-      border: none;
-    }
-
-    &[type='checkbox']:focus {
-      outline: $color-primary-purple solid 1px;
-    }
-
-    &[type='checkbox'] + label {
-      font-weight: normal;
-      display: inline;
-      margin: 0 0 0 0.5rem;
-    }
-  }
-
-  textarea {
-    @include input;
-
-    max-width: 100%;
-  }
-
   h3 {
     margin: 0.5rem 0;
     font-size: 1rem;
-  }
-
-  .invalid {
-
-    label {
-      color: red;
-    }
-
-    input {
-      border: 1px solid red;
-    }
-
-    textarea {
-      border: 1px solid red;
-    }
-
-    .message {
-      color: red;
-    }
   }
 </style>

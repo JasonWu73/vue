@@ -10,7 +10,7 @@
         :title="area"
       >{{ area }}</base-badge>
     </div>
-    <div class="actions">
+    <div class="action">
       <base-button mode="outline" link :to="coachContactLink">Contact</base-button>
       <base-button link :to="coachDetailsLink">View Details</base-button>
     </div>
@@ -50,7 +50,7 @@
     margin: 0.5rem 0;
   }
 
-  .actions {
+  .action {
     margin-top: 3rem;
     display: flex;
     justify-content: flex-end;

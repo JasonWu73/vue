@@ -1,0 +1,68 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+@mixin input {
+  display: block;
+  width: 100%;
+  border: 1px solid $color-grey;
+  font: inherit;
+
+  &:focus {
+    background-color: $color-purple-pale;
+    outline: none;
+    border-color: $color-primary-purple;
+  }
+}
+
+.form-control {
+  margin: 0.5rem 0;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input {
+  @include input;
+
+  &[type='checkbox'] {
+    display: inline;
+    width: auto;
+    border: none;
+  }
+
+  &[type='checkbox']:focus {
+    outline: $color-primary-purple solid 1px;
+  }
+
+  &[type='checkbox'] + label {
+    font-weight: normal;
+    display: inline;
+    margin: 0 0 0 0.5rem;
+  }
+}
+
+textarea {
+  @include input;
+
+  max-width: 100%;
+}
+
+.invalid {
+
+  label {
+    color: red;
+  }
+
+  input,
+  textarea {
+    border: 1px solid red;
+  }
+
+  .message {
+    font-style: italic;
+    color: red;
+  }
+}

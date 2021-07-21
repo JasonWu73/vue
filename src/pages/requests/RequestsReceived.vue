@@ -25,6 +25,7 @@
 
 <script>
   import RequestsItem from '../../components/requests/RequestsItem.vue';
+  import axiosUtils from '../../utils/axiosUtils.js';
 
   export default {
     components: { RequestsItem },
@@ -51,7 +52,7 @@
         try {
           await this.$store.dispatch('request/fetchRequests');
         } catch (error) {
-          this.error = error.message;
+          this.error = axiosUtils.handleError(error);
         }
         this.loading = false;
       },

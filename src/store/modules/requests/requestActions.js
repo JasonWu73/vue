@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export default {
   async contactCoach(context, payload) {
     const coachId = payload.coachId;
@@ -9,9 +7,8 @@ export default {
       message: payload.message
     };
 
-    const response = await axios.post(
-      `https://vue-htt-demo-51252-default-rtdb.firebaseio.com/requests/${coachId}.json`,
-      request);
+    const axios = context.rootGetters.getAxios;
+    const response = await axios.post(`requests/${coachId}.json`, request);
 
     request.id = response.data.name;
 
@@ -20,8 +17,9 @@ export default {
   async fetchRequests(context) {
     const coachId = context.rootGetters.getUserId;
 
-    const response = await axios.get(
-      `https://vue-htt-demo-51252-default-rtdb.firebaseio.com/requests/${coachId}.json`);
+    const axios = context.rootGetters.getAxios;
+    const token = context.rootGetters.getToken;
+    const response = await axios.get(`requests/${coachId}.json?auth=${token}`);
 
     const requests = [];
     const responseData = response.data;

@@ -1,18 +1,22 @@
 <template>
   <form @submit.prevent="submitForm">
-    <div class="form-control">
+    <div class="form-control" :class="{ invalid: email.invalid }">
       <label for="email">Your E-Mail</label>
-      <input type="email" id="email" v-model.trim="email">
+      <input type="email" id="email"
+        v-model.trim="email.val"
+        @blur="clearValidity('email')"
+      >
+      <span class="message" v-if="email.invalid">E-Mail not valid.</span>
     </div>
-    <div class="form-control">
+    <div class="form-control" :class="{ invalid: message.invalid }">
       <label for="message">Message</label>
-      <textarea rows="5" id="message" v-model.trim="message"></textarea>
+      <textarea rows="5" id="message"
+        v-model.trim="message.val"
+        @blur="clearValidity('message')"
+      ></textarea>
+      <span class="message" v-if="message.invalid">Message must not empty.</span>
     </div>
-    <div class="form-control">
-      <span class="errors" v-if="!formIsValid"
-      >Email and Message both all must not empty.</span>
-    </div>
-    <div class="actions">
+    <div>
       <base-button>Send Message</base-button>
     </div>
   </form>
@@ -22,19 +26,40 @@
   export default {
     data() {
       return {
-        email: '',
-        message: '',
-        formIsValid: true
+        email: {
+          val: '',
+          invalid: false
+        },
+        message: {
+          val: '',
+          invalid: false
+        },
+        formInvalid: false
       };
     },
     methods: {
+      clearValidity(key) {
+        console.log('blur');
+        this[key].invalid = false;
+        this.formInvalid = false;
+      },
+      setInvalid(key) {
+        this[key].invalid = true;
+        this.formInvalid = true;
+      },
+      validateForm() {
+        if (this.email.val === '' || !this.email.val.includes('@')) this.setInvalid('email');
+        if (this.message.val === '') this.setInvalid('message');
+      },
       submitForm() {
-        if (!this.email || !this.message) this.formIsValid = false;
+        this.validateForm();
+
+        if (this.formInvalid) return;
 
         const formData = {
           coachId: this.$route.params.id,
-          email: this.email,
-          message: this.message
+          email: this.email.val,
+          message: this.message.val
         };
 
         this.$store.dispatch('request/contactCoach', formData);
@@ -45,51 +70,5 @@
 </script>
 
 <style lang="scss" scoped>
-  @mixin input {
-    display: block;
-    width: 100%;
-    font: inherit;
-    border: .1rem solid $color-grey;
-    padding: 0.15rem;
 
-    &:focus {
-      border-color: #3d008d;
-      background-color: #faf6ff;
-      outline: none;
-    }
-  }
-
-  form {
-    margin: 1rem;
-    border: .1rem solid $color-grey;
-    border-radius: 1.2rem;
-    padding: 1rem;
-  }
-
-  .form-control {
-    margin: 0.5rem 0;
-  }
-
-  label {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-
-  input {
-    @include input;
-  }
-
-  textarea {
-    @include input;
-  }
-
-  .errors {
-    font-weight: bold;
-    color: red;
-  }
-
-  .actions {
-    text-align: center;
-  }
 </style>

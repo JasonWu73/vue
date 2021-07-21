@@ -11,12 +11,26 @@
   import TheHeader from './components/layout/TheHeader';
 
   export default {
-    components: { TheHeader }
+    components: { TheHeader },
+    computed: {
+      didAutoLogout() {
+        return this.$store.getters.getAutoLogout;
+      }
+    },
+    watch: {
+      didAutoLogout(curAutoLogout, oldAutoLogout) {
+        if (curAutoLogout && curAutoLogout !== oldAutoLogout)
+          this.$router.replace('/coaches');
+      }
+    },
+    created() {
+      this.$store.dispatch('tryLogin');
+    }
   };
 </script>
 
 <style lang="scss">
-  @import url("./vendors/css/font-roboto.css");
+  @import url('./vendors/css/font-roboto.css');
 
   *,
   *::after,

@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export default {
   async registerCoach(context, payload) {
     const userId = context.rootGetters.getUserId;
@@ -11,9 +9,9 @@ export default {
       areas: payload.areas
     };
 
-    await axios.put(
-      `https://vue-htt-demo-51252-default-rtdb.firebaseio.com/coaches/${userId}.json`,
-      coach);
+    const axios = context.rootGetters.getAxios;
+    const token = context.rootGetters.getToken;
+    await axios.put(`coaches/${userId}.json?auth=${token}`, coach);
 
     context.commit('addCoach', {
       ...coach,
@@ -24,8 +22,8 @@ export default {
     const { forceUpdate } = payload;
     if (!forceUpdate && !context.getters.shouldUpdate) return;
 
-    const response = await axios.get(
-      `https://vue-htt-demo-51252-default-rtdb.firebaseio.com/coaches.json`);
+    const axios = context.rootGetters.getAxios;
+    const response = await axios.get(`/coaches.json`);
 
     const coaches = [];
     const coachesFromServer = response.data;

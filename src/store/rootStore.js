@@ -1,20 +1,23 @@
 import { createStore } from 'vuex';
+import axios from 'axios';
 
-import getters from './rootGetters.js';
 import coachStore from './modules/coach/coachStore.js';
 import requestStore from './modules/requests/requestStore.js';
+import authStore from './modules/auth/authStore.js';
 
 const store = createStore({
   modules: {
     coach: coachStore,
-    request: requestStore
+    request: requestStore,
+    auth: authStore
   },
-  state() {
-    return {
-      userId: 'c3'
-    };
-  },
-  getters
+  getters: {
+    getAxios() {
+      return axios.create({
+        baseURL: 'https://vue-htt-demo-51252-default-rtdb.firebaseio.com'
+      });
+    }
+  }
 });
 
 export default store;

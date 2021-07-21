@@ -12,7 +12,8 @@
       <section>
         <div class="controls">
           <base-button mode="outline" @click="loadCoaches(true)">Refresh</base-button>
-          <base-button link to="/register" v-if="!isCoach">Register as Coach</base-button>
+          <base-button link to="/auth?redirect=requests" v-if="!isLoggedIn">Login</base-button>
+          <base-button link to="/register" v-else-if="!isCoach">Register as Coach</base-button>
         </div>
       </section>
       <section>
@@ -36,6 +37,7 @@
 <script>
   import CoachItem from '../../components/coaches/CoachItem.vue';
   import CoachFilter from '../../components/coaches/CoachFilter.vue';
+  import axiosUtils from '../../utils/axiosUtils.js';
 
   export default {
     components: { CoachItem, CoachFilter },
@@ -51,6 +53,9 @@
       }
     },
     computed: {
+      isLoggedIn() {
+        return this.$store.getters.isAuthenticated;
+      },
       filteredCoaches() {
         const coaches = this.$store.getters['coach/coaches'];
         return coaches.filter(coach => {
@@ -83,7 +88,7 @@
         try {
           await this.$store.dispatch('coach/loadCoaches', { forceUpdate });
         } catch (error) {
-          this.error = error.message;
+          this.error = axiosUtils.handleError(error);
         }
         this.loading = false;
       },
